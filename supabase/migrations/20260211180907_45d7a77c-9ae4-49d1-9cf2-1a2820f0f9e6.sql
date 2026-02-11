@@ -1,0 +1,1 @@
+ALTER TABLE public.awards DROP COLUMN category;

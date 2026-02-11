@@ -1,0 +1,4 @@
+project_id = "komvxasfembeswebgnjy"
+
+[functions.create-admin]
+verify_jwt = false
