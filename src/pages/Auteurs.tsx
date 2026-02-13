@@ -16,7 +16,7 @@ const Auteurs: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("authors")
-        .select("*, books(id)")
+        .select("*, book_authors(book_id)")
         .order("last_name");
       if (error) throw error;
       return data;
@@ -68,7 +68,7 @@ const Auteurs: React.FC = () => {
               <p className="text-sm text-muted-foreground mt-1">{author.specialty}</p>
               <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>{author.books?.length ?? 0} {t.authors.booksPublished}</span>
+                <span>{author.book_authors?.length ?? 0} {t.authors.booksPublished}</span>
               </div>
             </div>
           </Link>

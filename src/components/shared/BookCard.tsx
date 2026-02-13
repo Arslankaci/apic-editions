@@ -11,6 +11,7 @@ export interface BookCardBook {
   is_new: boolean | null;
   author_id: string | null;
   authors?: { first_name: string | null; last_name: string } | null;
+  book_authors?: { author_id: string; authors: { id: string; first_name: string | null; last_name: string } }[] | null;
   awards?: { name: string }[] | null;
   price?: number | null;
   currency?: string | null;
@@ -44,15 +45,25 @@ const BookCard: React.FC<BookCardProps> = ({ book, className }) => (
     <h3 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors">
       {book.title}
     </h3>
-    {book.authors && (
-      <Link
-        to={`/auteurs/${book.author_id}`}
-        className="text-xs text-muted-foreground mt-1 hover:text-primary transition-colors block"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {[book.authors?.first_name, book.authors?.last_name].filter(Boolean).join(" ")}
-      </Link>
-    )}
+    {(() => {
+      const ba = book.book_authors?.[0];
+      const authorName = ba
+        ? [ba.authors.first_name, ba.authors.last_name].filter(Boolean).join(" ")
+        : book.authors
+          ? [book.authors.first_name, book.authors.last_name].filter(Boolean).join(" ")
+          : null;
+      const authorId = ba?.author_id || book.author_id;
+      if (!authorName) return null;
+      return (
+        <Link
+          to={`/auteurs/${authorId}`}
+          className="text-xs text-muted-foreground mt-1 hover:text-primary transition-colors block"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {authorName}
+        </Link>
+      );
+    })()}
     {book.price != null && (
       <span className="text-xs font-medium text-primary mt-1 block">
         {book.price.toFixed(2)} {book.currency || "EUR"}
