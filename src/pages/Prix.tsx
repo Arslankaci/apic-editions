@@ -14,7 +14,7 @@ const Prix: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("awards")
-        .select("*, books(id, title, cover, author_id, authors(first_name, last_name))")
+        .select("*, books(id, title, cover, book_authors(author_id, authors(id, first_name, last_name)))")
         .order("year", { ascending: false });
       if (error) throw error;
       return data;
@@ -47,11 +47,11 @@ const Prix: React.FC = () => {
                       <span className="text-sm font-bold text-yellow-600 dark:text-yellow-400 truncate">{award.name}</span>
                     </div>
                     <h3 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors truncate">{book.title}</h3>
-                    {book.authors && (
-                      <Link to={`/auteurs/${book.author_id}`}
+                    {book.book_authors?.[0]?.authors && (
+                      <Link to={`/auteurs/${book.book_authors[0].author_id}`}
                         className="text-xs text-muted-foreground mt-0.5 hover:text-primary transition-colors block"
                         onClick={(e) => e.stopPropagation()}>
-                        {[book.authors?.first_name, book.authors?.last_name].filter(Boolean).join(" ")}
+                        {[book.book_authors[0].authors.first_name, book.book_authors[0].authors.last_name].filter(Boolean).join(" ")}
                       </Link>
                     )}
                   </div>
