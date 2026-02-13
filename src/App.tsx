@@ -42,6 +42,7 @@ const AdminSetup = React.lazy(() => import("./pages/admin/AdminSetup"));
 // These are small layout/guard components — keep eager
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
+import AdminErrorBoundary from "./components/admin/AdminErrorBoundary";
 
 // Warm-up ping to wake Supabase from cold start
 function SupabaseWarmUp() {
@@ -96,7 +97,7 @@ const App = () => (
               <Route path="/apic-admin">
                 <Route index element={<AdminLogin />} />
                 <Route path="setup" element={<AdminSetup />} />
-                <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                <Route element={<ProtectedRoute><AdminErrorBoundary><AdminLayout /></AdminErrorBoundary></ProtectedRoute>}>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="livres" element={<AdminBooks />} />
                   <Route path="auteurs" element={<AdminAuthors />} />
@@ -104,7 +105,6 @@ const App = () => (
                   <Route path="collections" element={<AdminCollections />} />
                   <Route path="prix" element={<AdminAwards />} />
                   <Route path="distributeurs" element={<AdminDistributors />} />
-                  
                   <Route path="equipe" element={<AdminTeam />} />
                 </Route>
               </Route>
