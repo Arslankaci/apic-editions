@@ -14,7 +14,7 @@ const AuteurDetail: React.FC = () => {
   const { data: author, isLoading: loadingAuthor } = useQuery({
     queryKey: ["author-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("authors").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("authors").select("id, first_name, last_name, photo, bio, specialty, created_at").eq("id", id!).single();
       if (error) throw error;
       return data;
     },
