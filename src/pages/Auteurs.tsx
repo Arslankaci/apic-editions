@@ -16,7 +16,7 @@ const Auteurs: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("authors")
-        .select("*, book_authors(book_id)")
+        .select("id, first_name, last_name, photo, specialty, book_authors(book_id)")
         .order("last_name");
       if (error) throw error;
       return data;

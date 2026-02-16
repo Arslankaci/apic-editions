@@ -57,6 +57,32 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (typeof email !== "string" || !emailRegex.test(email) || email.length > 255) {
+      return new Response(
+        JSON.stringify({ error: "Format d'email invalide." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate strong password
+    if (
+      typeof password !== "string" ||
+      password.length < 12 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/[0-9]/.test(password)
+    ) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule et un chiffre.",
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     let userId: string;
 
     // Try to create user, handle case where user already exists
