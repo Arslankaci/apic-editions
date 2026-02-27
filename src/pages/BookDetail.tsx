@@ -52,8 +52,9 @@ const BookDetail: React.FC = () => {
             <img src={book.cover || "/placeholder.svg"} alt={book.title} className="w-full h-full object-cover" />
           </div>
           {(book as any).back_cover && (
-            <div className="rounded-lg overflow-hidden shadow-lg aspect-[3/4]">
-              <img src={(book as any).back_cover} alt={`${book.title} – 4ème de couverture`} className="w-full h-full object-cover" />
+            <div className="rounded-lg border border-border bg-muted/50 p-5 shadow-sm">
+              <h3 className="text-sm font-semibold text-muted-foreground mb-2">4ème de couverture</h3>
+              <p className="text-sm leading-relaxed text-foreground whitespace-pre-line">{(book as any).back_cover}</p>
             </div>
           )}
         </div>
