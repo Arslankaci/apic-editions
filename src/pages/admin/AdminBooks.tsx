@@ -315,7 +315,7 @@ export default function AdminBooks() {
 
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Couverture</Label><ImageUpload bucket="book-covers" value={form.cover} onChange={(url) => set("cover", url)} /></div>
-              <div><Label>4ème de couverture</Label><ImageUpload bucket="book-covers" value={form.back_cover} onChange={(url) => set("back_cover", url)} /></div>
+              <div><Label>4ème de couverture (résumé)</Label><Textarea value={form.back_cover} onChange={(e) => set("back_cover", e.target.value)} rows={4} placeholder="Entrez le résumé / texte de la 4ème de couverture" /></div>
             </div>
             <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} /></div>
 
