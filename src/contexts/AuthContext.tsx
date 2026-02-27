@@ -7,6 +7,7 @@ interface AuthContextType {
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
+  adminCheckPending: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -18,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [adminCheckPending, setAdminCheckPending] = useState(false);
   const initialCheckDone = useRef(false);
 
   const checkAdminRole = useCallback(async (userId: string) => {
@@ -43,8 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
+          setAdminCheckPending(true);
           const admin = await checkAdminRole(session.user.id);
           setIsAdmin(admin);
+          setAdminCheckPending(false);
         } else {
           setIsAdmin(false);
         }
@@ -87,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, loading, adminCheckPending, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
