@@ -1,61 +1,40 @@
 
 
-# Correction des problemes de securite
+# Correction du bug de connexion admin (double tentative)
 
-## Problemes detectes
+## Diagnostic
 
-1. **Validation faible dans la fonction create-admin** - Le mot de passe et l'email ne sont pas valides cote serveur (n'importe quel mot de passe faible est accepte)
-2. **Dates de naissance des auteurs accessibles publiquement** - Information personnelle sensible exposee via les requetes publiques
-3. **Log de routes dans la console sur la page 404** - Expose les chemins tentes dans la console du navigateur
-4. **Protection contre les mots de passe compromis desactivee** - Parametre Supabase a activer manuellement
+Le probleme est une **race condition** dans le flux d'authentification :
 
----
+1. `signIn()` declenche `onAuthStateChange` dans `AuthContext`
+2. Le listener met a jour `user` **immediatement**, puis attend (`await`) la verification admin
+3. React re-render avec `user = present` mais `isAdmin = false` (pas encore verifie)
+4. Le `useEffect` dans `AdminLogin` detecte `user && !isAdmin` → affiche "Acces refuse" et deconnecte
 
-## Corrections prevues
+La deuxieme tentative fonctionne car la session est deja en cache.
 
-### 1. Edge function `create-admin` : validation renforcee
+## Solution
 
-Ajouter une validation serveur stricte pour :
-- Format email valide (regex)
-- Mot de passe de 12 caracteres minimum avec majuscules, minuscules et chiffres
+Ajouter un etat `adminCheckPending` dans `AuthContext` qui empeche les composants de reagir tant que la verification admin n'est pas terminee.
 
-### 2. Requetes publiques : exclure `birth_date`
+### Modifications
 
-Les pages publiques (Auteurs, detail auteur) ne demandent pas `birth_date` dans leurs requetes SELECT. Seule la page admin l'utilise, ce qui est correct car elle est protegee par authentification. Ce probleme peut etre marque comme non applicable si les requetes publiques n'incluent pas ce champ.
+**Fichier : `src/contexts/AuthContext.tsx`**
+- Ajouter un state `adminCheckPending` (boolean)
+- Dans `onAuthStateChange` : mettre `adminCheckPending = true` avant de verifier le role, puis `false` apres
+- Exposer `adminCheckPending` dans le contexte
 
-Verification : les requetes publiques selectionnent `*` ou des champs specifiques. Il faudra verifier les pages `Auteurs.tsx` et `AuteurDetail.tsx` et s'assurer qu'elles ne demandent pas `birth_date` (ou ne selectionnent pas `*`).
+**Fichier : `src/pages/admin/AdminLogin.tsx`**
+- Utiliser `adminCheckPending` du contexte
+- Modifier le useEffect "not admin" pour ne reagir que quand `!adminCheckPending` :
+  ```
+  if (!loading && !adminCheckPending && user && !isAdmin)
+  ```
+- Modifier le useEffect "redirect" de la meme facon :
+  ```
+  if (!loading && !adminCheckPending && user && isAdmin)
+  ```
 
-### 3. Page 404 : supprimer le console.error
-
-Remplacer le `console.error` qui expose les chemins URL par un simple commentaire ou le supprimer completement.
-
-### 4. Protection mots de passe compromis (action manuelle)
-
-Ce parametre doit etre active manuellement dans le dashboard Supabase :
-- Aller dans **Authentication > Settings > Password Security**
-- Activer **"Leaked password protection"**
-
----
-
-## Details techniques
-
-### Fichiers modifies
-
-| Fichier | Modification |
-|---------|-------------|
-| `supabase/functions/create-admin/index.ts` | Ajout validation email + mot de passe fort |
-| `src/pages/NotFound.tsx` | Suppression du `console.error` avec le pathname |
-| Pages publiques auteurs (`Auteurs.tsx`, `AuteurDetail.tsx`) | Verifier/corriger les SELECT pour exclure `birth_date` |
-
-### Edge function : exemple de validation ajoutee
-
-```text
-- Email : regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-- Password : min 12 caracteres, au moins 1 majuscule, 1 minuscule, 1 chiffre
-- Messages d'erreur en francais
-```
-
-### Action manuelle requise
-
-Apres l'approbation du plan, tu devras aller activer la protection contre les mots de passe compromis dans le dashboard Supabase : **Authentication > Settings > Password Security**.
+**Fichier : `src/components/admin/ProtectedRoute.tsx`**
+- Inclure `adminCheckPending` dans la condition de chargement
 
