@@ -12,20 +12,20 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { signIn, signOut, isAdmin, user, loading } = useAuth();
+  const { signIn, signOut, isAdmin, user, loading, adminCheckPending } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Redirect when authenticated as admin
   useEffect(() => {
-    if (!loading && user && isAdmin) {
+    if (!loading && !adminCheckPending && user && isAdmin) {
       navigate("/apic-admin/dashboard", { replace: true });
     }
-  }, [loading, user, isAdmin, navigate]);
+  }, [loading, adminCheckPending, user, isAdmin, navigate]);
 
   // Handle authenticated but not admin
   useEffect(() => {
-    if (!loading && user && !isAdmin) {
+    if (!loading && !adminCheckPending && user && !isAdmin) {
       setSubmitting(false);
       toast({
         title: "Accès refusé",
@@ -34,7 +34,7 @@ export default function AdminLogin() {
       });
       signOut();
     }
-  }, [loading, user, isAdmin]);
+  }, [loading, adminCheckPending, user, isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
