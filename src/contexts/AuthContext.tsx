@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [adminCheckPending, setAdminCheckPending] = useState(false);
   const initialCheckDone = useRef(false);
+  const adminChecked = useRef(false);
 
   const checkAdminRole = useCallback(async (userId: string) => {
     const { data, error } = await supabase.rpc("has_role", {
@@ -43,13 +44,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
 
-        if (event === "SIGNED_IN") {
+        if (event === "SIGNED_IN" && !adminChecked.current) {
           setAdminCheckPending(true);
           const admin = await checkAdminRole(session!.user.id);
           setIsAdmin(admin);
           setAdminCheckPending(false);
+          adminChecked.current = true;
         } else if (event === "SIGNED_OUT") {
           setIsAdmin(false);
+          adminChecked.current = false;
         }
         // TOKEN_REFRESHED : update session/user only, no admin re-check
       }
@@ -72,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         const admin = await checkAdminRole(session.user.id);
         setIsAdmin(admin);
+        adminChecked.current = true;
       }
       setLoading(false);
       initialCheckDone.current = true;
