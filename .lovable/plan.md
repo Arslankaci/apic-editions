@@ -1,22 +1,46 @@
 
 
-# Changer la 4eme de couverture : image → texte
+# Chargement infini au retour sur l'onglet admin
 
-## Modifications
+## Diagnostic
 
-### 1. `src/pages/admin/AdminBooks.tsx`
-- Ligne 318 : remplacer le composant `ImageUpload` pour le champ `back_cover` par un `Textarea` pour saisir du texte (resume)
-- Le label reste "4eme de couverture"
+Quand on change d'onglet et qu'on revient, Supabase rafraichit automatiquement le token JWT et declenche `onAuthStateChange` avec l'evenement `TOKEN_REFRESHED`. Le listener actuel :
 
-### 2. `src/pages/BookDetail.tsx`
-- Lignes 54-58 : remplacer le bloc `<img>` qui affiche `back_cover` comme image par un bloc texte stylise (paragraphe avec fond leger, par exemple un encadre avec le resume)
+1. Met `adminCheckPending = true` → `ProtectedRoute` affiche le spinner
+2. Lance `checkAdminRole()` (appel RPC reseau)
+3. Si l'appel est lent ou echoue silencieusement → spinner infini
 
-### Fichiers modifies
+Le role admin ne change pas entre deux onglets. Il est inutile de le reverifier a chaque rafraichissement de token.
 
-| Fichier | Changement |
-|---------|-----------|
-| `src/pages/admin/AdminBooks.tsx` | `ImageUpload` → `Textarea` pour `back_cover` |
-| `src/pages/BookDetail.tsx` | `<img>` → bloc texte pour afficher le resume |
+## Solution
 
-Aucune migration necessaire : la colonne `back_cover` est deja de type `text` en base.
+Dans `src/contexts/AuthContext.tsx`, filtrer les evenements dans `onAuthStateChange` :
+
+- **`SIGNED_IN`** : mettre a jour user/session ET verifier le role admin
+- **`SIGNED_OUT`** : reset user/session/isAdmin
+- **`TOKEN_REFRESHED`** : mettre a jour session/user seulement, **ne pas re-verifier le role admin**
+- **Autres evenements** (`INITIAL_SESSION`, `PASSWORD_RECOVERY`, etc.) : ignorer ou traiter minimalement
+
+### Modification unique : `src/contexts/AuthContext.tsx`
+
+```typescript
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (!initialCheckDone.current) return;
+
+  setSession(session);
+  setUser(session?.user ?? null);
+
+  if (event === "SIGNED_IN") {
+    setAdminCheckPending(true);
+    const admin = await checkAdminRole(session!.user.id);
+    setIsAdmin(admin);
+    setAdminCheckPending(false);
+  } else if (event === "SIGNED_OUT") {
+    setIsAdmin(false);
+  }
+  // TOKEN_REFRESHED : on met a jour session/user mais pas de re-check admin
+});
+```
+
+Aucun autre fichier a modifier. Le `refetchOnWindowFocus: false` est deja en place pour les queries React Query.
 
