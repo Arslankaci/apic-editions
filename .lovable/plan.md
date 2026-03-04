@@ -1,46 +1,44 @@
 
 
-# Chargement infini au retour sur l'onglet admin
+# Fix: chargement infini persistant au retour sur l'onglet admin
 
 ## Diagnostic
 
-Quand on change d'onglet et qu'on revient, Supabase rafraichit automatiquement le token JWT et declenche `onAuthStateChange` avec l'evenement `TOKEN_REFRESHED`. Le listener actuel :
-
-1. Met `adminCheckPending = true` → `ProtectedRoute` affiche le spinner
-2. Lance `checkAdminRole()` (appel RPC reseau)
-3. Si l'appel est lent ou echoue silencieusement → spinner infini
-
-Le role admin ne change pas entre deux onglets. Il est inutile de le reverifier a chaque rafraichissement de token.
+Le correctif precedent filtre sur `event === "SIGNED_IN"`, mais Supabase peut emettre un evenement `SIGNED_IN` lors du retour sur l'onglet (pas seulement `TOKEN_REFRESHED`), notamment quand le token a expire et est re-etabli. Cela declenche a nouveau `setAdminCheckPending(true)` et l'appel RPC, causant le spinner.
 
 ## Solution
 
-Dans `src/contexts/AuthContext.tsx`, filtrer les evenements dans `onAuthStateChange` :
+Dans `src/contexts/AuthContext.tsx`, ne re-verifier le role admin que si on ne l'a pas deja verifie (c'est-a-dire si `isAdmin` est `false` ET que l'utilisateur vient de se connecter pour la premiere fois). Concretement, ajouter un ref `adminChecked` qui indique si le role a deja ete verifie pour la session courante.
 
-- **`SIGNED_IN`** : mettre a jour user/session ET verifier le role admin
-- **`SIGNED_OUT`** : reset user/session/isAdmin
-- **`TOKEN_REFRESHED`** : mettre a jour session/user seulement, **ne pas re-verifier le role admin**
-- **Autres evenements** (`INITIAL_SESSION`, `PASSWORD_RECOVERY`, etc.) : ignorer ou traiter minimalement
+### Modification : `src/contexts/AuthContext.tsx`
 
-### Modification unique : `src/contexts/AuthContext.tsx`
+1. Ajouter `const adminChecked = useRef(false);`
+2. Dans `onAuthStateChange`, pour `SIGNED_IN` : ne verifier le role que si `!adminChecked.current`
+3. Apres la verification initiale et dans le listener, mettre `adminChecked.current = true`
+4. Sur `SIGNED_OUT`, reset `adminChecked.current = false`
 
 ```typescript
-supabase.auth.onAuthStateChange(async (event, session) => {
-  if (!initialCheckDone.current) return;
+const adminChecked = useRef(false);
 
-  setSession(session);
-  setUser(session?.user ?? null);
+// Dans onAuthStateChange:
+if (event === "SIGNED_IN" && !adminChecked.current) {
+  setAdminCheckPending(true);
+  const admin = await checkAdminRole(session!.user.id);
+  setIsAdmin(admin);
+  setAdminCheckPending(false);
+  adminChecked.current = true;
+} else if (event === "SIGNED_OUT") {
+  setIsAdmin(false);
+  adminChecked.current = false;
+}
 
-  if (event === "SIGNED_IN") {
-    setAdminCheckPending(true);
-    const admin = await checkAdminRole(session!.user.id);
-    setIsAdmin(admin);
-    setAdminCheckPending(false);
-  } else if (event === "SIGNED_OUT") {
-    setIsAdmin(false);
-  }
-  // TOKEN_REFRESHED : on met a jour session/user mais pas de re-check admin
-});
+// Dans getSession initial:
+if (session?.user) {
+  const admin = await checkAdminRole(session.user.id);
+  setIsAdmin(admin);
+  adminChecked.current = true;
+}
 ```
 
-Aucun autre fichier a modifier. Le `refetchOnWindowFocus: false` est deja en place pour les queries React Query.
+Fichier unique a modifier : `src/contexts/AuthContext.tsx`.
 
