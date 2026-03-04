@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="mt-10 pt-6 border-t border-secondary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-secondary-foreground/60">
-          <p>© 2025 APIC Éditions. {t.footer.rights}.</p>
+          <p>© 2026 APIC Éditions. {t.footer.rights}.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-secondary-foreground transition-colors">{t.footer.legal}</a>
             <a href="#" className="hover:text-secondary-foreground transition-colors">{t.footer.privacy}</a>
