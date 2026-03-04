@@ -37,21 +37,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Set up listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        // Skip if getSession hasn't completed yet — it will handle the initial state
+      async (event, session) => {
         if (!initialCheckDone.current) return;
 
         setSession(session);
         setUser(session?.user ?? null);
 
-        if (session?.user) {
+        if (event === "SIGNED_IN") {
           setAdminCheckPending(true);
-          const admin = await checkAdminRole(session.user.id);
+          const admin = await checkAdminRole(session!.user.id);
           setIsAdmin(admin);
           setAdminCheckPending(false);
-        } else {
+        } else if (event === "SIGNED_OUT") {
           setIsAdmin(false);
         }
+        // TOKEN_REFRESHED : update session/user only, no admin re-check
       }
     );
 
