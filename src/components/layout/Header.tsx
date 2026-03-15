@@ -57,8 +57,8 @@ const Header: React.FC = () => {
       {/* Main nav */}
       <div className="container">
         <nav className="flex items-center justify-between h-14">
-          <Link to="/" className="font-heading text-xl font-bold text-primary">
-            APIC
+          <Link to="/" className="flex items-center">
+            <img src={apicLogo} alt="APIC Éditions" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop nav */}

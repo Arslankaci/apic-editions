@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="font-heading text-2xl font-bold mb-3">APIC Éditions</h3>
+            <img src={apicLogo} alt="APIC Éditions" className="h-9 w-auto mb-3" />
             <p className="text-secondary-foreground/70 text-sm leading-relaxed">
               Découvrir, Apprendre, Partager
             </p>
