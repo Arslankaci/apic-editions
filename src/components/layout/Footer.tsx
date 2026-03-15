@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import SocialLinks from "@/components/shared/SocialLinks";
+import apicLogo from "@/assets/apic-logo.svg";
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();

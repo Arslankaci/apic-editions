@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import apicLogo from "@/assets/apic-logo.svg";
 
 const Header: React.FC = () => {
   const { t, locale, toggleLocale } = useLanguage();
