@@ -42,7 +42,7 @@ const Header: React.FC = () => {
       {/* Top bar */}
       <div className="bg-secondary text-secondary-foreground">
         <div className="container flex justify-between items-center py-1.5 text-sm">
-          <img src={apicLogo} alt="APIC Éditions" className="h-5 w-auto" />
+          <span className="font-heading font-semibold tracking-wide">APIC Éditions</span>
           <button
             onClick={toggleLocale}
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
