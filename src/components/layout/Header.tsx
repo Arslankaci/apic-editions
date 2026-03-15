@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import apicLogo from "@/assets/apic-logo.svg";
 
 const Header: React.FC = () => {
   const { t, locale, toggleLocale } = useLanguage();
@@ -41,7 +42,7 @@ const Header: React.FC = () => {
       {/* Top bar */}
       <div className="bg-secondary text-secondary-foreground">
         <div className="container flex justify-between items-center py-1.5 text-sm">
-          <span className="font-heading font-semibold tracking-wide">APIC Éditions</span>
+          <img src={apicLogo} alt="APIC Éditions" className="h-5 w-auto" />
           <button
             onClick={toggleLocale}
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
@@ -56,8 +57,8 @@ const Header: React.FC = () => {
       {/* Main nav */}
       <div className="container">
         <nav className="flex items-center justify-between h-14">
-          <Link to="/" className="font-heading text-xl font-bold text-primary">
-            APIC
+          <Link to="/" className="flex items-center">
+            <img src={apicLogo} alt="APIC Éditions" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop nav */}
