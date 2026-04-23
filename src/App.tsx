@@ -94,8 +94,8 @@ const App = () => (
 
               {/* Admin */}
               <Route path="/apic-admin">
-                <Route index element={<AdminLogin />} />
-                <Route path="setup" element={<AdminSetup />} />
+                <Route index element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />
+                <Route path="setup" element={<Suspense fallback={<PageLoader />}><AdminSetup /></Suspense>} />
                 <Route element={<ProtectedRoute><AdminErrorBoundary><AdminLayout /></AdminErrorBoundary></ProtectedRoute>}>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="livres" element={<AdminBooks />} />
