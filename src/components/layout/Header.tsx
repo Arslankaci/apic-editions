@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import PrefetchLink from "@/components/PrefetchLink";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,9 +58,9 @@ const Header: React.FC = () => {
       {/* Main nav */}
       <div className="container">
         <nav className="flex items-center justify-between h-14">
-          <Link to="/" className="flex items-center">
+          <PrefetchLink to="/" className="flex items-center">
             <img src={apicLogo} alt="APIC Éditions" className="h-8 w-auto" />
-          </Link>
+          </PrefetchLink>
 
           {/* Desktop nav */}
           <ul className="hidden lg:flex items-center gap-1">
@@ -73,7 +74,7 @@ const Header: React.FC = () => {
                   setHoveredGenre(null);
                 }}
               >
-                <Link
+                <PrefetchLink
                   to={item.to}
                   className={`px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center gap-1 ${
                     isActive(item.to)
@@ -83,7 +84,7 @@ const Header: React.FC = () => {
                 >
                   {item.label}
                   {item.hasMegaMenu && <ChevronDown className="w-3 h-3" />}
-                </Link>
+                </PrefetchLink>
 
                 {/* Mega menu for books */}
                 {item.hasMegaMenu && booksMenuOpen && (
@@ -149,7 +150,7 @@ const Header: React.FC = () => {
           >
             <div className="container py-4 space-y-1">
               {navItems.map((item) => (
-                <Link
+                <PrefetchLink
                   key={item.to}
                   to={item.to}
                   onClick={() => setMobileOpen(false)}
@@ -160,7 +161,7 @@ const Header: React.FC = () => {
                   }`}
                 >
                   {item.label}
-                </Link>
+                </PrefetchLink>
               ))}
             </div>
           </motion.div>

@@ -9,6 +9,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
+import { prefetchRoute } from "@/lib/routePrefetch";
 import {
   Sidebar,
   SidebarContent,
@@ -50,6 +51,8 @@ export default function AdminSidebar() {
                       end
                       className="hover:bg-muted/50"
                       activeClassName="bg-muted text-primary font-medium"
+                      onMouseEnter={() => prefetchRoute(item.url)}
+                      onFocus={() => prefetchRoute(item.url)}
                     >
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
