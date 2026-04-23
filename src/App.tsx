@@ -76,8 +76,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+          <Routes>
               {/* Public site */}
               <Route path="/" element={<Layout><Index /></Layout>} />
               <Route path="/actualites" element={<Layout><Actualites /></Layout>} />
@@ -95,8 +94,8 @@ const App = () => (
 
               {/* Admin */}
               <Route path="/apic-admin">
-                <Route index element={<AdminLogin />} />
-                <Route path="setup" element={<AdminSetup />} />
+                <Route index element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />
+                <Route path="setup" element={<Suspense fallback={<PageLoader />}><AdminSetup /></Suspense>} />
                 <Route element={<ProtectedRoute><AdminErrorBoundary><AdminLayout /></AdminErrorBoundary></ProtectedRoute>}>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="livres" element={<AdminBooks />} />
@@ -110,8 +109,7 @@ const App = () => (
               </Route>
 
               <Route path="*" element={<Layout><NotFound /></Layout>} />
-            </Routes>
-          </Suspense>
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
       </AuthProvider>
