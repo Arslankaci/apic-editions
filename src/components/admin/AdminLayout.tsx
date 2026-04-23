@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./AdminSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +39,15 @@ export default function AdminLayout() {
             </div>
           </header>
           <main className="flex-1 p-6 bg-muted/20">
-            <Outlet />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center min-h-[40vh]">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </main>
         </div>
       </div>

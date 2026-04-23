@@ -76,8 +76,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+          <Routes>
               {/* Public site */}
               <Route path="/" element={<Layout><Index /></Layout>} />
               <Route path="/actualites" element={<Layout><Actualites /></Layout>} />
@@ -110,8 +109,7 @@ const App = () => (
               </Route>
 
               <Route path="*" element={<Layout><NotFound /></Layout>} />
-            </Routes>
-          </Suspense>
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
       </AuthProvider>
