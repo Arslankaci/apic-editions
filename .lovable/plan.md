@@ -1,44 +1,63 @@
 
 
-# Fix: chargement infini persistant au retour sur l'onglet admin
+# Fix: navigation qui semble "recharger" tout le site
 
 ## Diagnostic
 
-Le correctif precedent filtre sur `event === "SIGNED_IN"`, mais Supabase peut emettre un evenement `SIGNED_IN` lors du retour sur l'onglet (pas seulement `TOKEN_REFRESHED`), notamment quand le token a expire et est re-etabli. Cela declenche a nouveau `setAdminCheckPending(true)` et l'appel RPC, causant le spinner.
+Le site n'est PAS rechargé (le routing client React Router fonctionne via `<Link>`). Mais visuellement il *semble* se recharger à cause de **deux problèmes** :
 
-## Solution
+### Problème 1 — Suspense fallback global qui démonte le Layout
 
-Dans `src/contexts/AuthContext.tsx`, ne re-verifier le role admin que si on ne l'a pas deja verifie (c'est-a-dire si `isAdmin` est `false` ET que l'utilisateur vient de se connecter pour la premiere fois). Concretement, ajouter un ref `adminChecked` qui indique si le role a deja ete verifie pour la session courante.
+Dans `src/App.tsx`, le `<Suspense>` enveloppe **toutes les routes**, et son fallback est un spinner plein écran (`min-h-screen`). Conséquence : à chaque clic vers une page lazy-loaded, le Header + Footer + contenu disparaissent ensemble pendant le téléchargement du chunk JS, et reviennent ensuite. L'utilisateur voit un flash blanc avec roue de chargement → impression de "rechargement complet".
 
-### Modification : `src/contexts/AuthContext.tsx`
+Côté admin, c'est pire : cliquer sur "Livres" depuis "Dashboard" démonte le `AdminLayout` (sidebar comprise) parce que le `<Suspense>` est au-dessus de toutes les routes admin.
 
-1. Ajouter `const adminChecked = useRef(false);`
-2. Dans `onAuthStateChange`, pour `SIGNED_IN` : ne verifier le role que si `!adminChecked.current`
-3. Apres la verification initiale et dans le listener, mettre `adminChecked.current = true`
-4. Sur `SIGNED_OUT`, reset `adminChecked.current = false`
+### Problème 2 — Pas de prefetch des chunks
 
-```typescript
-const adminChecked = useRef(false);
+Les pages sont chargées paresseusement, donc le premier clic vers une page jamais visitée doit télécharger son JS. C'est rapide en prod mais ajoute une latence visible.
 
-// Dans onAuthStateChange:
-if (event === "SIGNED_IN" && !adminChecked.current) {
-  setAdminCheckPending(true);
-  const admin = await checkAdminRole(session!.user.id);
-  setIsAdmin(admin);
-  setAdminCheckPending(false);
-  adminChecked.current = true;
-} else if (event === "SIGNED_OUT") {
-  setIsAdmin(false);
-  adminChecked.current = false;
-}
+## Correctifs
 
-// Dans getSession initial:
-if (session?.user) {
-  const admin = await checkAdminRole(session.user.id);
-  setIsAdmin(admin);
-  adminChecked.current = true;
-}
-```
+### 1. Déplacer Suspense pour préserver les layouts persistants
 
-Fichier unique a modifier : `src/contexts/AuthContext.tsx`.
+Dans `src/App.tsx`, remplacer le `<Suspense>` global unique par :
+- Un `<Suspense>` **à l'intérieur** de chaque `<Layout>` (côté front), avec un fallback léger limité à la zone `<main>` (pas plein écran), pour que Header/Footer restent affichés.
+- Un `<Suspense>` **à l'intérieur** de `AdminLayout` (autour de l'`<Outlet />`) pour que la sidebar admin et le header admin restent affichés pendant la navigation entre pages admin.
+
+Concrètement :
+- Modifier `src/components/layout/Layout.tsx` pour wrapper `{children}` dans un `<Suspense>` avec fallback compact (spinner centré dans le `<main>`).
+- Modifier `src/components/admin/AdminLayout.tsx` pour wrapper `<Outlet />` dans un `<Suspense>` similaire.
+- Retirer le `<Suspense>` global de `App.tsx` (ou le garder vide en sécurité).
+
+Résultat : en naviguant, seule la zone de contenu se recharge brièvement. Header, navigation, sidebar restent visibles → sensation d'app fluide, plus de "flash".
+
+### 2. Prefetch des chunks au survol des liens
+
+Créer un composant `PrefetchLink` qui wrap `react-router-dom` `Link` et déclenche le `import()` de la page cible au `onMouseEnter` / `onFocus`. Quand l'utilisateur clique, le chunk est déjà téléchargé → navigation quasi-instantanée.
+
+Mapper chaque route à son `import()` dans un objet partagé (`src/lib/routePrefetch.ts`) et l'utiliser dans :
+- `Header.tsx` (nav desktop + mobile)
+- `AdminSidebar.tsx`
+- Liens internes des cartes (`BookCard`, `NewsCard`, etc.) — optionnel, deuxième passe.
+
+### 3. Ajustement mineur du fallback
+
+Le spinner actuel utilise `min-h-screen` partout. Le réduire à `min-h-[40vh]` pour la zone contenu uniquement, pour éviter le saut de mise en page.
+
+## Fichiers modifiés
+
+- `src/App.tsx` — retirer le `<Suspense>` global
+- `src/components/layout/Layout.tsx` — ajouter `<Suspense>` interne
+- `src/components/admin/AdminLayout.tsx` — ajouter `<Suspense>` autour de `<Outlet />`
+- `src/lib/routePrefetch.ts` — nouveau, table des `import()` par route
+- `src/components/PrefetchLink.tsx` — nouveau, Link avec prefetch au hover
+- `src/components/layout/Header.tsx` — utiliser `PrefetchLink`
+- `src/components/admin/AdminSidebar.tsx` — utiliser `PrefetchLink`
+
+## Impact attendu
+
+- Navigation visuellement instantanée entre pages admin (sidebar ne disparaît plus).
+- Plus de flash plein écran sur le site public — Header/Footer persistants.
+- Premier clic vers une page non visitée : ~0 ms de latence réseau (chunk déjà préchargé au survol).
+- Aucun impact négatif sur la performance initiale (le code-splitting reste actif).
 
