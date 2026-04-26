@@ -87,7 +87,7 @@ export const translations = {
       visitSite: "Visiter le site",
     },
     awards: {
-      title: "Prix & Récompenses",
+      title: "Catalogue",
       subtitle: "Les distinctions littéraires obtenues par nos ouvrages",
       year: "Année",
     },
