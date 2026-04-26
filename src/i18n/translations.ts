@@ -117,7 +117,7 @@ export const translations = {
       findUs: "Find Us",
       about: "About Us",
       contact: "Contact",
-      distributors: "Distributors",
+      distributors: "Partners",
       awards: "Awards",
       authors: "Our Authors",
     },
