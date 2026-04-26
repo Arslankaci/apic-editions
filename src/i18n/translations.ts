@@ -11,7 +11,6 @@ export const translations = {
       about: "Qui sommes-nous ?",
       contact: "Nous contacter",
       distributors: "Nos Partenaires",
-      awards: "Prix",
       authors: "Nos Auteurs",
     },
     home: {
@@ -52,8 +51,6 @@ export const translations = {
       allBookstores: "Toutes les librairies",
       resetFilters: "Réinitialiser les filtres",
       resultsCount: "résultat(s)",
-      filterAward: "Prix littéraire",
-      allAwards: "Tous les prix",
     },
     collections: {
       title: "Nos Collections",
@@ -86,11 +83,6 @@ export const translations = {
       title: "Nos Partenaires",
       visitSite: "Visiter le site",
     },
-    awards: {
-      title: "Prix & Récompenses",
-      subtitle: "Les distinctions littéraires obtenues par nos ouvrages",
-      year: "Année",
-    },
     authors: {
       title: "Nos Auteurs",
       subtitle: "Les plumes qui font la richesse d'APIC Éditions",
@@ -118,7 +110,6 @@ export const translations = {
       about: "About Us",
       contact: "Contact",
       distributors: "Partners",
-      awards: "Awards",
       authors: "Our Authors",
     },
     home: {
@@ -159,8 +150,6 @@ export const translations = {
       allBookstores: "All bookstores",
       resetFilters: "Reset filters",
       resultsCount: "result(s)",
-      filterAward: "Literary Award",
-      allAwards: "All awards",
     },
     collections: {
       title: "Our Collections",
@@ -192,11 +181,6 @@ export const translations = {
     distributors: {
       title: "Our Partners",
       visitSite: "Visit website",
-    },
-    awards: {
-      title: "Awards & Honors",
-      subtitle: "Literary distinctions received by our books",
-      year: "Year",
     },
     authors: {
       title: "Our Authors",

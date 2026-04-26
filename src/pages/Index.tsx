@@ -19,7 +19,7 @@ const Index: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("books")
-        .select("*, book_authors(author_id, authors(id, first_name, last_name)), awards(name), price, currency")
+        .select("*, book_authors(author_id, authors(id, first_name, last_name)), price, currency")
         .eq("is_new", true)
         .order("published_date", { ascending: false });
       if (error) throw error;

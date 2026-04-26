@@ -4,7 +4,6 @@ import {
   Users,
   Newspaper,
   FolderOpen,
-  Award,
   Truck,
   UserCog,
 } from "lucide-react";
@@ -27,9 +26,8 @@ const menuItems = [
   { title: "Auteurs", url: "/apic-admin/auteurs", icon: Users },
   { title: "Événements", url: "/apic-admin/actualites", icon: Newspaper },
   { title: "Collections", url: "/apic-admin/collections", icon: FolderOpen },
-  { title: "Prix", url: "/apic-admin/prix", icon: Award },
   { title: "Partenaires", url: "/apic-admin/distributeurs", icon: Truck },
-  
+
   { title: "Équipe", url: "/apic-admin/equipe", icon: UserCog },
 ];
 

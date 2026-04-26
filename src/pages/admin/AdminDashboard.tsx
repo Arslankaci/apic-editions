@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Users, Newspaper, FolderOpen, Award } from "lucide-react";
+import { BookOpen, Users, Newspaper, FolderOpen } from "lucide-react";
 import { Loader2 } from "lucide-react";
 
 function useCount(table: string) {
@@ -21,14 +21,13 @@ const stats = [
   { key: "authors", label: "Auteurs", icon: Users },
   { key: "news_articles", label: "Actualités", icon: Newspaper },
   { key: "collections", label: "Collections", icon: FolderOpen },
-  { key: "awards", label: "Prix", icon: Award },
 ];
 
 export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-heading font-bold text-foreground">Dashboard</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {stats.map((s) => (
           <StatCard key={s.key} table={s.key} label={s.label} icon={s.icon} />
         ))}
