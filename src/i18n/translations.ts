@@ -11,7 +11,7 @@ export const translations = {
       about: "Qui sommes-nous ?",
       contact: "Nous contacter",
       distributors: "Nos Partenaires",
-      awards: "Prix",
+      awards: "Catalogue",
       authors: "Nos Auteurs",
     },
     home: {
@@ -87,7 +87,7 @@ export const translations = {
       visitSite: "Visiter le site",
     },
     awards: {
-      title: "Prix & Récompenses",
+      title: "Catalogue",
       subtitle: "Les distinctions littéraires obtenues par nos ouvrages",
       year: "Année",
     },
@@ -118,7 +118,7 @@ export const translations = {
       about: "About Us",
       contact: "Contact",
       distributors: "Partners",
-      awards: "Awards",
+      awards: "Catalog",
       authors: "Our Authors",
     },
     home: {
@@ -194,7 +194,7 @@ export const translations = {
       visitSite: "Visit website",
     },
     awards: {
-      title: "Awards & Honors",
+      title: "Catalog",
       subtitle: "Literary distinctions received by our books",
       year: "Year",
     },
