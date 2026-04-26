@@ -47,35 +47,6 @@ export type Database = {
         }
         Relationships: []
       }
-      awards: {
-        Row: {
-          book_id: string | null
-          id: string
-          name: string
-          year: number | null
-        }
-        Insert: {
-          book_id?: string | null
-          id?: string
-          name: string
-          year?: number | null
-        }
-        Update: {
-          book_id?: string | null
-          id?: string
-          name?: string
-          year?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "awards_book_id_fkey"
-            columns: ["book_id"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       book_authors: {
         Row: {
           author_id: string
