@@ -39,9 +39,9 @@ const Contact: React.FC = () => {
 
         {/* Info */}
         <div className="space-y-4">
-          <InfoCard icon={Phone} title={t.contact.phone} description="+213 (0) 21 00 00 00" />
-          <InfoCard icon={Mail} title={t.contact.email} description="contact@apic-editions.com" />
-          <InfoCard icon={MapPin} title={t.contact.address} description="12 Rue Didouche Mourad, Alger" />
+          <InfoCard icon={Phone} title={t.contact.phone} description="+213 549 42 37 95" />
+          <InfoCard icon={Mail} title={t.contact.email} description="editionsapic@gmail.com" />
+          <InfoCard icon={MapPin} title={t.contact.address} description="9, Rue Ricour Omar, Ben Aknoun" />
         </div>
       </div>
     </div>
