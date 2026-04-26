@@ -178,7 +178,7 @@ export default function AdminBooks() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-heading font-bold text-foreground">Livres</h1>
+        <h1 className="text-3xl font-heading font-bold text-foreground">Catalogue</h1>
         <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" />Ajouter</Button>
       </div>
 
