@@ -27,17 +27,14 @@ export interface FilterSidebarProps {
   genres: FilterOption[];
   subGenres: FilterOption[];
   authors: FilterOption[];
-  awardOptions: FilterOption[];
   selectedCollection: string;
   selectedGenre: string;
   selectedSubGenre: string;
   selectedAuthor: string;
-  selectedAward: string;
   onCollectionChange: (v: string) => void;
   onGenreChange: (v: string) => void;
   onSubGenreChange: (v: string) => void;
   onAuthorChange: (v: string) => void;
-  onAwardChange: (v: string) => void;
   onReset: () => void;
   resultCount: number;
   className?: string;
@@ -69,15 +66,15 @@ const FilterSelect: React.FC<{
 );
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
-  collections, genres, subGenres, authors, awardOptions,
-  selectedCollection, selectedGenre, selectedSubGenre, selectedAuthor, selectedAward,
-  onCollectionChange, onGenreChange, onSubGenreChange, onAuthorChange, onAwardChange,
+  collections, genres, subGenres, authors,
+  selectedCollection, selectedGenre, selectedSubGenre, selectedAuthor,
+  onCollectionChange, onGenreChange, onSubGenreChange, onAuthorChange,
   onReset, resultCount, className,
 }) => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
 
-  const hasActiveFilter = selectedCollection || selectedGenre || selectedSubGenre || selectedAuthor || selectedAward;
+  const hasActiveFilter = selectedCollection || selectedGenre || selectedSubGenre || selectedAuthor;
 
   const filtersContent = (
     <div className="space-y-4">
@@ -85,7 +82,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <FilterSelect label={t.books.filterGenre} placeholder={t.books.allGenres} options={genres} value={selectedGenre} onChange={onGenreChange} />
       <FilterSelect label={t.books.filterSubGenre} placeholder={t.books.allSubGenres} options={subGenres} value={selectedSubGenre} onChange={onSubGenreChange} disabled={!selectedGenre} />
       <FilterSelect label={t.books.filterAuthor} placeholder={t.books.allAuthors} options={authors} value={selectedAuthor} onChange={onAuthorChange} />
-      <FilterSelect label={t.books.filterAward} placeholder={t.books.allAwards} options={awardOptions} value={selectedAward} onChange={onAwardChange} />
 
       {hasActiveFilter && (
         <Button variant="ghost" size="sm" className="w-full mt-2" onClick={onReset}>

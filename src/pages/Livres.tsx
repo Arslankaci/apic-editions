@@ -17,7 +17,6 @@ const Livres: React.FC = () => {
   const [selectedSubGenre, setSelectedSubGenre] = useState(searchParams.get("sub") || "");
   const [selectedCollection, setSelectedCollection] = useState("");
   const [selectedAuthor, setSelectedAuthor] = useState("");
-  const [selectedAward, setSelectedAward] = useState("");
 
   useEffect(() => {
     setSelectedGenre(searchParams.get("genre") || "");
@@ -29,7 +28,7 @@ const Livres: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("books")
-        .select("*, book_authors(author_id, authors(id, first_name, last_name)), collections(id, name), awards(name)")
+        .select("*, book_authors(author_id, authors(id, first_name, last_name)), collections(id, name)")
         .order("title");
       if (error) throw error;
       return data;
@@ -54,16 +53,6 @@ const Livres: React.FC = () => {
     },
   });
 
-  const { data: awardsList = [] } = useQuery({
-    queryKey: ["awards-names"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("awards").select("name");
-      if (error) throw error;
-      const unique = [...new Set(data.map((a) => a.name))].sort();
-      return unique;
-    },
-  });
-
   const genreOptions = useMemo(() => genres.map((g) => ({ value: g.name, label: g.name })), [genres]);
 
   const subGenreOptions = useMemo(() => {
@@ -81,8 +70,6 @@ const Livres: React.FC = () => {
     return [...names].sort().map((a) => ({ value: a, label: a }));
   }, [books]);
 
-  const awardFilterOptions = useMemo(() => awardsList.map((n) => ({ value: n, label: n })), [awardsList]);
-
   const filtered = useMemo(() => {
     return books.filter((b: any) => {
       const authorNames = b.book_authors?.map((ba: any) => [ba.authors?.first_name, ba.authors?.last_name].filter(Boolean).join(" ")).join(" ") ?? "";
@@ -91,20 +78,18 @@ const Livres: React.FC = () => {
       const matchSubGenre = !selectedSubGenre || b.sub_genre === selectedSubGenre;
       const matchCollection = !selectedCollection || b.collection_id === selectedCollection;
       const matchAuthor = !selectedAuthor || b.book_authors?.some((ba: any) => [ba.authors?.first_name, ba.authors?.last_name].filter(Boolean).join(" ") === selectedAuthor);
-      const matchAward = !selectedAward || (b.awards && b.awards.some((a: any) => a.name === selectedAward));
-      return matchSearch && matchGenre && matchSubGenre && matchCollection && matchAuthor && matchAward;
+      return matchSearch && matchGenre && matchSubGenre && matchCollection && matchAuthor;
     });
-  }, [search, selectedGenre, selectedSubGenre, selectedCollection, selectedAuthor, selectedAward, books]);
+  }, [search, selectedGenre, selectedSubGenre, selectedCollection, selectedAuthor, books]);
 
   const handleReset = () => {
-    setSelectedGenre(""); setSelectedSubGenre(""); setSelectedCollection(""); setSelectedAuthor(""); setSelectedAward("");
+    setSelectedGenre(""); setSelectedSubGenre(""); setSelectedCollection(""); setSelectedAuthor("");
   };
 
   if (isLoading) {
     return <div className="container py-12 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
   }
 
-  // Adapt books for BookCard: pick first author for display
   const booksForCard = filtered.map((b: any) => ({
     ...b,
     authors: b.book_authors?.[0]?.authors ?? null,
@@ -121,12 +106,12 @@ const Livres: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <FilterSidebar
           collections={collectionOptions} genres={genreOptions} subGenres={subGenreOptions}
-          authors={authorOptions} awardOptions={awardFilterOptions}
+          authors={authorOptions}
           selectedCollection={selectedCollection} selectedGenre={selectedGenre}
-          selectedSubGenre={selectedSubGenre} selectedAuthor={selectedAuthor} selectedAward={selectedAward}
+          selectedSubGenre={selectedSubGenre} selectedAuthor={selectedAuthor}
           onCollectionChange={setSelectedCollection} onGenreChange={setSelectedGenre}
           onSubGenreChange={setSelectedSubGenre} onAuthorChange={setSelectedAuthor}
-          onAwardChange={setSelectedAward} onReset={handleReset} resultCount={filtered.length}
+          onReset={handleReset} resultCount={filtered.length}
         />
         <div className="flex-1">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">

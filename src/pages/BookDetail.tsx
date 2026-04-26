@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trophy, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 const BookDetail: React.FC = () => {
   const { t } = useLanguage();
@@ -15,7 +15,7 @@ const BookDetail: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("books")
-        .select("*, book_authors(author_id, authors(id, first_name, last_name)), collections(name), awards(name, year)")
+        .select("*, book_authors(author_id, authors(id, first_name, last_name)), collections(name)")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -81,22 +81,6 @@ const BookDetail: React.FC = () => {
             <div><span className="text-muted-foreground">{t.books.publishedOn}:</span> <span className="font-medium">{book.published_date}</span></div>
             <div><span className="text-muted-foreground">Genre:</span> <span className="font-medium">{book.genre}{book.sub_genre ? ` / ${book.sub_genre}` : ""}</span></div>
           </div>
-          {book.awards && book.awards.length > 0 && (
-            <div className="mt-6 pt-4 border-t border-border">
-              <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                {t.nav.awards || "Prix"}
-              </h2>
-              <ul className="space-y-2">
-                {book.awards.map((award: any, i: number) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <span className="font-medium">{award.name}</span>
-                    <span className="text-muted-foreground">({award.year})</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </div>
     </div>

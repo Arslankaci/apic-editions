@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import CustomBadge from "./CustomBadge";
-import { Trophy } from "lucide-react";
 
 export interface BookCardBook {
   id: string;
@@ -12,7 +11,6 @@ export interface BookCardBook {
   author_id: string | null;
   authors?: { first_name: string | null; last_name: string } | null;
   book_authors?: { author_id: string; authors: { id: string; first_name: string | null; last_name: string } }[] | null;
-  awards?: { name: string }[] | null;
   price?: number | null;
   currency?: string | null;
 }
@@ -35,11 +33,6 @@ const BookCard: React.FC<BookCardProps> = ({ book, className }) => (
         <CustomBadge variant="primary" className="absolute top-2 right-2">
           NEW
         </CustomBadge>
-      )}
-      {book.awards && book.awards.length > 0 && (
-        <div className="absolute bottom-2 left-2 bg-yellow-500/90 text-white rounded-full p-1.5 shadow" title={book.awards[0].name}>
-          <Trophy className="w-3.5 h-3.5" />
-        </div>
       )}
     </div>
     <h3 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors">

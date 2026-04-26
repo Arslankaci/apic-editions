@@ -29,7 +29,6 @@ const Header: React.FC = () => {
     { to: "/livres", label: t.nav.books, hasMegaMenu: true },
     { to: "/collections", label: t.nav.collections },
     { to: "/auteurs", label: t.nav.authors },
-    { to: "/prix", label: t.nav.awards },
     { to: "/ou-nous-trouver", label: t.nav.findUs },
     { to: "/qui-sommes-nous", label: t.nav.about },
     { to: "/contact", label: t.nav.contact },

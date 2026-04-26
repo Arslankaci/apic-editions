@@ -16,7 +16,6 @@ const Actualites = React.lazy(() => import("./pages/Actualites"));
 const ActualiteDetail = React.lazy(() => import("./pages/ActualiteDetail"));
 const Livres = React.lazy(() => import("./pages/Livres"));
 const BookDetail = React.lazy(() => import("./pages/BookDetail"));
-const Prix = React.lazy(() => import("./pages/Prix"));
 const Collections = React.lazy(() => import("./pages/Collections"));
 const OuNousTrouver = React.lazy(() => import("./pages/OuNousTrouver"));
 const QuiSommesNous = React.lazy(() => import("./pages/QuiSommesNous"));
@@ -33,7 +32,6 @@ const AdminBooks = React.lazy(() => import("./pages/admin/AdminBooks"));
 const AdminAuthors = React.lazy(() => import("./pages/admin/AdminAuthors"));
 const AdminNews = React.lazy(() => import("./pages/admin/AdminNews"));
 const AdminCollections = React.lazy(() => import("./pages/admin/AdminCollections"));
-const AdminAwards = React.lazy(() => import("./pages/admin/AdminAwards"));
 const AdminDistributors = React.lazy(() => import("./pages/admin/AdminDistributors"));
 
 const AdminTeam = React.lazy(() => import("./pages/admin/AdminTeam"));
@@ -86,7 +84,6 @@ const App = () => (
               <Route path="/collections" element={<Layout><Collections /></Layout>} />
               <Route path="/auteurs" element={<Layout><Auteurs /></Layout>} />
               <Route path="/auteurs/:id" element={<Layout><AuteurDetail /></Layout>} />
-              <Route path="/prix" element={<Layout><Prix /></Layout>} />
               <Route path="/ou-nous-trouver" element={<Layout><OuNousTrouver /></Layout>} />
               <Route path="/qui-sommes-nous" element={<Layout><QuiSommesNous /></Layout>} />
               <Route path="/contact" element={<Layout><Contact /></Layout>} />
@@ -102,7 +99,6 @@ const App = () => (
                   <Route path="auteurs" element={<AdminAuthors />} />
                   <Route path="actualites" element={<AdminNews />} />
                   <Route path="collections" element={<AdminCollections />} />
-                  <Route path="prix" element={<AdminAwards />} />
                   <Route path="distributeurs" element={<AdminDistributors />} />
                   <Route path="equipe" element={<AdminTeam />} />
                 </Route>

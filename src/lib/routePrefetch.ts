@@ -14,7 +14,6 @@ export const routeImporters: Record<string, Importer> = {
   "/collections": () => import("@/pages/Collections"),
   "/auteurs": () => import("@/pages/Auteurs"),
   "/auteurs/:id": () => import("@/pages/AuteurDetail"),
-  "/prix": () => import("@/pages/Prix"),
   "/ou-nous-trouver": () => import("@/pages/OuNousTrouver"),
   "/qui-sommes-nous": () => import("@/pages/QuiSommesNous"),
   "/contact": () => import("@/pages/Contact"),
@@ -26,7 +25,6 @@ export const routeImporters: Record<string, Importer> = {
   "/apic-admin/auteurs": () => import("@/pages/admin/AdminAuthors"),
   "/apic-admin/actualites": () => import("@/pages/admin/AdminNews"),
   "/apic-admin/collections": () => import("@/pages/admin/AdminCollections"),
-  "/apic-admin/prix": () => import("@/pages/admin/AdminAwards"),
   "/apic-admin/distributeurs": () => import("@/pages/admin/AdminDistributors"),
   "/apic-admin/equipe": () => import("@/pages/admin/AdminTeam"),
 };
