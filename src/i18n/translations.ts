@@ -83,7 +83,7 @@ export const translations = {
       address: "Adresse",
     },
     distributors: {
-      title: "Nos Distributeurs",
+      title: "Nos Partenaires",
       visitSite: "Visiter le site",
     },
     awards: {
