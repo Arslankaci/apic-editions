@@ -28,7 +28,7 @@ const menuItems = [
   { title: "Collections", url: "/apic-admin/collections", icon: FolderOpen },
   { title: "Partenaires", url: "/apic-admin/distributeurs", icon: Truck },
 
-  { title: "Équipe", url: "/apic-admin/equipe", icon: UserCog },
+  { title: "Nous contacter", url: "/apic-admin/equipe", icon: UserCog },
 ];
 
 export default function AdminSidebar() {
