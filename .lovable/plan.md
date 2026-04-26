@@ -1,47 +1,71 @@
-# Suppression complète de la rubrique "Prix"
+## 🎯 Objectif
+Rendre l'admin **visuellement familier** au client en reprenant les codes du site public (header, couleurs, typographies, mise en page) — afin qu'il retrouve instantanément la rubrique sur laquelle il veut intervenir.
 
-## Portée
-Tout supprimer : page publique, entrée menu, page admin, sidebar admin, badges trophée sur cartes livres, mentions sur fiches livre/auteur, filtre catalogue, table BDD `awards`, traductions et clés de routing.
+## 🧠 Principe directeur — UX
+Le client connaît le site public. S'il voit dans l'admin **les mêmes rubriques, dans le même ordre, avec les mêmes icônes/couleurs**, il fait le lien immédiatement entre "ce que je vois en ligne" et "ce que je modifie en coulisse".
 
-## Modifications fichier par fichier
+---
 
-### Fichiers supprimés
-- `src/pages/Prix.tsx`
-- `src/pages/admin/AdminAwards.tsx`
+## 📋 Plan en 4 axes
 
-### Front public
-- **`src/components/layout/Header.tsx`** — retirer l'entrée `{ to: "/prix", label: t.nav.awards }` du menu.
-- **`src/pages/Index.tsx`** — retirer `awards(name)` de la requête books home.
-- **`src/pages/BookDetail.tsx`** — retirer `awards(name, year)` de la requête, supprimer le bloc d'affichage des prix (lignes ~84-95) et l'icône `Trophy` de l'import.
-- **`src/pages/AuteurDetail.tsx`** — retirer `awards(name, year)` de la requête, supprimer `authorAwards` et son bloc d'affichage, retirer l'import `Trophy`.
-- **`src/pages/Livres.tsx`** — retirer `awards(name)` de la requête, le state `selectedAward`, la query `awards-names`, `awardFilterOptions`, le filtre `matchAward`, la prop `selectedAward`/`onAwardChange`, et le reset associé.
-- **`src/components/shared/FilterSidebar.tsx`** — retirer les props `selectedAward`, `onAwardChange`, `awardOptions` et le `<FilterSelect>` correspondant.
-- **`src/components/shared/BookCard.tsx`** — retirer `awards` de l'interface, le bloc badge trophée (lignes ~39-43) et l'import `Trophy`.
+### 1. Adopter le **Header public** dans l'admin (à la place de la sidebar verticale)
 
-### Admin
-- **`src/components/admin/AdminSidebar.tsx`** — retirer l'entrée `{ title: "Prix", url: "/apic-admin/prix", icon: Award }` et l'import `Award`.
-- **`src/pages/admin/AdminDashboard.tsx`** — retirer `{ key: "awards", label: "Prix", icon: Award }` du tableau de stats et l'import `Award`.
+**Avant** : sidebar verticale gauche (peu intuitive pour un non-tech).
+**Après** : barre de navigation horizontale **identique** à celle du site public, avec les **mêmes libellés** et **dans le même ordre**.
 
-### Routing & lazy
-- **`src/App.tsx`** — retirer `const Prix = ...`, `const AdminAwards = ...`, et les deux routes `/prix` et `prix` (admin).
-- **`src/lib/routePrefetch.ts`** — retirer `"/prix"` et `"/apic-admin/prix"`.
+| Site public | Admin (nouveau) | Route |
+|---|---|---|
+| Accueil | 🏠 Tableau de bord | `/apic-admin/dashboard` |
+| Actualités | 📰 Actualités | `/apic-admin/actualites` |
+| Catalogue | 📚 Catalogue | `/apic-admin/livres` |
+| Collections | 📁 Collections | `/apic-admin/collections` |
+| Auteurs | ✍️ Auteurs | `/apic-admin/auteurs` |
+| Où nous trouver | 🚚 Partenaires | `/apic-admin/distributeurs` |
+| Nous contacter | 👥 Nous contacter | `/apic-admin/equipe` |
 
-### i18n
-- **`src/i18n/translations.ts`** — retirer les clés `nav.awards`, `awards.title/subtitle`, `books.filterAward`, `books.allAwards` (FR + EN).
+**Différenciation claire** : barre supérieure rouge bordeaux portant la mention **« Mode Administration »** + bouton **« Voir le site »** (ouvre le front dans un nouvel onglet) + email + déconnexion. Impossible de confondre les deux espaces.
 
-### Base de données
-Migration SQL à exécuter :
-```sql
-DROP TABLE IF EXISTS public.awards;
-```
-Cela supprime la table, ses RLS policies et toutes les données awards.
+### 2. Reprendre l'**identité visuelle** du front
+- **Mêmes typographies** : Playfair Display (titres) + Source Sans 3 (corps) — déjà partagées via `index.css`, à appliquer systématiquement aux titres de pages admin.
+- **Mêmes couleurs** : blanc / rouge / bordeaux (tokens existants : `primary`, `secondary`, `bordeaux`).
+- **Logo APIC** identique en haut à gauche, cliquable → renvoie au dashboard admin.
 
-## Vérifications post-suppression
-- `rg -i "award|prix|trophy" src/` doit ne plus rien retourner (hors prix monétaire dans `AdminBooks.tsx` ligne 334 qui parle du **prix de vente** — à conserver).
-- `src/integrations/supabase/types.ts` se régénérera automatiquement après la migration.
-- L'utilisateur étant actuellement sur `/apic-admin/prix`, sera automatiquement redirigé vers la 404 (puis devra naviguer ailleurs).
+### 3. Restructurer chaque page admin sur le **modèle des pages publiques**
 
-## Risques & garanties
-- **Aucun impact** sur livres, auteurs, collections, distributeurs, équipe, news.
-- **Aucune dépendance** externe à `awards` hors des fichiers listés (vérifié par grep).
-- Les fichiers mémoire (`mem://features/awards`) seront mis à jour pour refléter la suppression.
+Chaque page admin reprend la structure visuelle d'une page front :
+- **`PageHeader`** (composant déjà partagé) en haut avec titre + sous-titre explicatif (ex : « Catalogue — Gérez les livres affichés sur le site »).
+- **`SectionWrapper`** pour structurer le contenu.
+- Le bouton **« + Ajouter »** stylisé comme les CTA du front (rouge primary).
+- Les listes de livres/auteurs en admin reprennent les **mêmes `BookCard` / `NewsCard`** que le front (en mode édition avec icônes ✏️/🗑️ en overlay) → le client voit *exactement* ce que voit le visiteur.
+
+### 4. Ajouts de confort pour client non-tech
+- **Lien « 👁 Voir sur le site »** sur chaque ligne (livre, auteur, actualité) → ouvre la page publique correspondante dans un nouvel onglet. Le client vérifie immédiatement le rendu.
+- **Messages d'aide contextuels** sous chaque titre de page (1 phrase, ton humain).
+- **Breadcrumb** « Admin › Catalogue › Modifier *Le Petit Prince* » pour toujours savoir où on est.
+
+---
+
+## 🛠 Fichiers impactés
+
+**Nouveaux composants**
+- `src/components/admin/AdminHeader.tsx` — header horizontal calqué sur `Header.tsx` public, avec bandeau « Mode Administration ».
+
+**Refonte**
+- `src/components/admin/AdminLayout.tsx` — remplace `SidebarProvider` + `AdminSidebar` par `<AdminHeader />` + `<main>` pleine largeur.
+- Toutes les pages `src/pages/admin/Admin*.tsx` — uniformisation : `PageHeader` + `SectionWrapper` + boutons stylés front + lien « Voir sur le site ».
+
+**Suppression / archivage**
+- `src/components/admin/AdminSidebar.tsx` — supprimé (remplacé par le header).
+
+**Conservé tel quel**
+- Toute la logique métier (mutations Supabase, formulaires, validation, upload images, RLS, auth).
+- Les routes (`/apic-admin/*`) — aucun changement d'URL.
+- `ProtectedRoute`, `AuthContext`, `useAuth`.
+
+---
+
+## ✅ Résultat attendu
+Le client ouvre l'admin → il **reconnaît immédiatement** la barre de navigation du site → il clique sur « Catalogue » comme il le ferait sur le site public → il voit les livres affichés **comme sur le site**, avec un crayon pour modifier. Aucune courbe d'apprentissage technique.
+
+## ❓ Avant de lancer
+Une seule question : préfères-tu que la barre **« Mode Administration »** (bandeau rouge bordeaux différenciant) soit **fine et discrète** en haut, ou **bien visible** avec un fond coloré marqué ? Je pars sur **bien visible** par défaut pour éviter toute confusion entre admin et site public.
