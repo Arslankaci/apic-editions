@@ -118,7 +118,7 @@ export const translations = {
       about: "About Us",
       contact: "Contact",
       distributors: "Partners",
-      awards: "Awards",
+      awards: "Catalog",
       authors: "Our Authors",
     },
     home: {
