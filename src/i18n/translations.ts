@@ -190,7 +190,7 @@ export const translations = {
       address: "Address",
     },
     distributors: {
-      title: "Our Distributors",
+      title: "Our Partners",
       visitSite: "Visit website",
     },
     awards: {
