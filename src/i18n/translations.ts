@@ -194,7 +194,7 @@ export const translations = {
       visitSite: "Visit website",
     },
     awards: {
-      title: "Awards & Honors",
+      title: "Catalog",
       subtitle: "Literary distinctions received by our books",
       year: "Year",
     },
