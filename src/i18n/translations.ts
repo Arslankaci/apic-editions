@@ -10,7 +10,7 @@ export const translations = {
       findUs: "Où nous trouver ?",
       about: "Qui sommes-nous ?",
       contact: "Nous contacter",
-      distributors: "Nos Distributeurs",
+      distributors: "Nos Partenaires",
       awards: "Prix",
       authors: "Nos Auteurs",
     },
