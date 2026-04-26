@@ -10,7 +10,7 @@ export const translations = {
       findUs: "Où nous trouver ?",
       about: "Qui sommes-nous ?",
       contact: "Nous contacter",
-      distributors: "Nos Distributeurs",
+      distributors: "Nos Partenaires",
       awards: "Prix",
       authors: "Nos Auteurs",
     },
@@ -83,7 +83,7 @@ export const translations = {
       address: "Adresse",
     },
     distributors: {
-      title: "Nos Distributeurs",
+      title: "Nos Partenaires",
       visitSite: "Visiter le site",
     },
     awards: {
@@ -117,7 +117,7 @@ export const translations = {
       findUs: "Find Us",
       about: "About Us",
       contact: "Contact",
-      distributors: "Distributors",
+      distributors: "Partners",
       awards: "Awards",
       authors: "Our Authors",
     },
@@ -190,7 +190,7 @@ export const translations = {
       address: "Address",
     },
     distributors: {
-      title: "Our Distributors",
+      title: "Our Partners",
       visitSite: "Visit website",
     },
     awards: {
