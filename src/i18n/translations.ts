@@ -5,7 +5,7 @@ export const translations = {
     nav: {
       home: "Accueil",
       news: "Actualités",
-      books: "Nos Livres",
+      books: "Catalogue",
       collections: "Nos Collections",
       findUs: "Où nous trouver ?",
       about: "Qui sommes-nous ?",
@@ -32,7 +32,7 @@ export const translations = {
       readMore: "Lire la suite",
     },
     books: {
-      title: "Nos Livres",
+      title: "Catalogue",
       search: "Rechercher par titre ou auteur…",
       allGenres: "Tous les genres",
       filters: "Filtres",
@@ -112,7 +112,7 @@ export const translations = {
     nav: {
       home: "Home",
       news: "News",
-      books: "Our Books",
+      books: "Catalog",
       collections: "Collections",
       findUs: "Find Us",
       about: "About Us",
@@ -139,7 +139,7 @@ export const translations = {
       readMore: "Read more",
     },
     books: {
-      title: "Our Books",
+      title: "Catalog",
       search: "Search by title or author…",
       allGenres: "All genres",
       filters: "Filters",

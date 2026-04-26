@@ -23,7 +23,7 @@ import {
 
 const menuItems = [
   { title: "Dashboard", url: "/apic-admin/dashboard", icon: LayoutDashboard },
-  { title: "Livres", url: "/apic-admin/livres", icon: BookOpen },
+  { title: "Catalogue", url: "/apic-admin/livres", icon: BookOpen },
   { title: "Auteurs", url: "/apic-admin/auteurs", icon: Users },
   { title: "Événements", url: "/apic-admin/actualites", icon: Newspaper },
   { title: "Collections", url: "/apic-admin/collections", icon: FolderOpen },
