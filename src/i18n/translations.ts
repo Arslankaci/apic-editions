@@ -51,8 +51,6 @@ export const translations = {
       allBookstores: "Toutes les librairies",
       resetFilters: "Réinitialiser les filtres",
       resultsCount: "résultat(s)",
-      filterAward: "Prix littéraire",
-      allAwards: "Tous les prix",
     },
     collections: {
       title: "Nos Collections",
@@ -84,11 +82,6 @@ export const translations = {
     distributors: {
       title: "Nos Partenaires",
       visitSite: "Visiter le site",
-    },
-    awards: {
-      title: "Prix & Récompenses",
-      subtitle: "Les distinctions littéraires obtenues par nos ouvrages",
-      year: "Année",
     },
     authors: {
       title: "Nos Auteurs",
@@ -157,8 +150,6 @@ export const translations = {
       allBookstores: "All bookstores",
       resetFilters: "Reset filters",
       resultsCount: "result(s)",
-      filterAward: "Literary Award",
-      allAwards: "All awards",
     },
     collections: {
       title: "Our Collections",
@@ -190,11 +181,6 @@ export const translations = {
     distributors: {
       title: "Our Partners",
       visitSite: "Visit website",
-    },
-    awards: {
-      title: "Awards & Honors",
-      subtitle: "Literary distinctions received by our books",
-      year: "Year",
     },
     authors: {
       title: "Our Authors",
