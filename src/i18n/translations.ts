@@ -11,7 +11,7 @@ export const translations = {
       about: "Qui sommes-nous ?",
       contact: "Nous contacter",
       distributors: "Nos Partenaires",
-      awards: "Prix",
+      awards: "Catalogue",
       authors: "Nos Auteurs",
     },
     home: {
