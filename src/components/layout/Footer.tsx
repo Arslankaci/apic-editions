@@ -9,21 +9,6 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="mt-16">
-      {/* Colored quick-access bar (mockup-aligned) */}
-      <div className="bg-primary text-primary-foreground">
-        <div className="container py-6 flex flex-col sm:flex-row items-center justify-around gap-4 text-sm font-medium">
-          <Link to="/mentions-legales" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
-            {t.footer.legal}
-          </Link>
-          <Link to="/apic-admin" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
-            {t.footer.proSpace}
-          </Link>
-          <Link to="/contact" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
-            {t.nav.contact}
-          </Link>
-        </div>
-      </div>
-
       {/* Main footer */}
       <div className="bg-secondary text-secondary-foreground">
         <div className="container py-10">
@@ -52,6 +37,21 @@ const Footer: React.FC = () => {
           <div className="mt-8 pt-6 border-t border-secondary-foreground/10 text-sm text-secondary-foreground/60 text-center">
             <p>© 2026 APIC Éditions. {t.footer.rights}.</p>
           </div>
+        </div>
+      </div>
+
+      {/* Bottom red bar (mockup-aligned) */}
+      <div className="bg-primary text-primary-foreground">
+        <div className="container py-4 flex flex-col sm:flex-row items-center justify-around gap-3 text-sm font-medium">
+          <Link to="/mentions-legales" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
+            {t.footer.legal}
+          </Link>
+          <Link to="/apic-admin" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
+            {t.footer.proSpace}
+          </Link>
+          <Link to="/contact" className="hover:opacity-80 transition-opacity underline-offset-4 hover:underline">
+            {t.nav.contact}
+          </Link>
         </div>
       </div>
     </footer>
