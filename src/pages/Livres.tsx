@@ -18,6 +18,9 @@ const Livres: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState("");
   const [selectedAuthor, setSelectedAuthor] = useState("");
 
+  // Resolve collection name from URL param to its ID
+  const collectionParam = searchParams.get("collection") || "";
+
   useEffect(() => {
     setSelectedGenre(searchParams.get("genre") || "");
     setSelectedSubGenre(searchParams.get("sub") || "");
