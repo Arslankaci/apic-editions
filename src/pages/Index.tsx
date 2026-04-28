@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import BookCard from "@/components/shared/BookCard";
@@ -12,7 +12,6 @@ import NewsCard from "@/components/shared/NewsCard";
 
 const Index: React.FC = () => {
   const { t } = useLanguage();
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: newBooks = [] } = useQuery({
     queryKey: ["home-new-books"],
@@ -40,11 +39,7 @@ const Index: React.FC = () => {
     },
   });
 
-  const scroll = (dir: "left" | "right") => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
-    }
-  };
+
 
   return (
     <>
@@ -73,24 +68,32 @@ const Index: React.FC = () => {
         </div>
       </section>
 
-      {/* Nouveautés */}
+      {/* Nouveautés - défilement automatique */}
       <SectionWrapper bg="bg-cream">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-heading font-bold">{t.home.newBooks}</h2>
-          <div className="flex gap-2">
-            <button onClick={() => scroll("left")} className="p-2 rounded-full border border-border hover:bg-muted transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button onClick={() => scroll("right")} className="p-2 rounded-full border border-border hover:bg-muted transition-colors">
-              <ChevronRight className="w-4 h-4" />
-            </button>
+        </div>
+        {newBooks.length > 0 && (
+          <div
+            className="group relative overflow-hidden"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+            }}
+          >
+            <div className="flex gap-6 w-max animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+              {[...newBooks, ...newBooks].map((book, idx) => (
+                <BookCard
+                  key={`${book.id}-${idx}`}
+                  book={book}
+                  className="flex-shrink-0 w-48"
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        <div ref={scrollRef} className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
-          {newBooks.map((book) => (
-            <BookCard key={book.id} book={book} className="flex-shrink-0 w-48 snap-start" />
-          ))}
-        </div>
+        )}
       </SectionWrapper>
 
       {/* About preview */}
