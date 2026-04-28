@@ -56,6 +56,14 @@ const Livres: React.FC = () => {
     },
   });
 
+  // When ?collection=Name is in URL, resolve it to its ID once collections load
+  useEffect(() => {
+    if (collectionParam && collections.length > 0) {
+      const match = collections.find((c: any) => c.name === collectionParam);
+      if (match) setSelectedCollection(match.id);
+    }
+  }, [collectionParam, collections]);
+
   const genreOptions = useMemo(() => genres.map((g) => ({ value: g.name, label: g.name })), [genres]);
 
   const subGenreOptions = useMemo(() => {
