@@ -17,12 +17,19 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 type News = Tables<"news_articles">;
 
-const emptyForm = { title: "", excerpt: "", content: "", image: "", date: "", category: "", type: "actualite", extraImages: [] as string[] };
+const emptyForm = { title: "", excerpt: "", content: "", image: "", date: "", category: "", type: "actualite", event_type: "autre", extraImages: [] as string[] };
 const categories = ["Événement", "Récompense", "Nouveauté", "Parution", "Autre"];
 const types = [
   { value: "actualite", label: "Actualité" },
   { value: "evenement", label: "Événement" },
   { value: "historique", label: "Historique" },
+];
+const eventTypes = [
+  { value: "autre", label: "— Aucun (actualité simple)" },
+  { value: "salon", label: "Salon du livre" },
+  { value: "rencontre", label: "Rencontre littéraire" },
+  { value: "conference", label: "Conférence" },
+  { value: "dedicace", label: "Séance dédicace" },
 ];
 
 export default function AdminNews() {
@@ -83,6 +90,7 @@ export default function AdminNews() {
       title: n.title, excerpt: n.excerpt ?? "", content: (n as any).content ?? "",
       image: n.image ?? "", date: n.date ?? "", category: n.category ?? "",
       type: (n as any).type ?? "actualite",
+      event_type: (n as any).event_type ?? "autre",
       extraImages: images?.map((i) => i.image_url) ?? [],
     });
     setDialogOpen(true);
@@ -95,6 +103,7 @@ export default function AdminNews() {
         title: form.title, excerpt: form.excerpt || null, image: form.image || null,
         date: form.date || null, category: form.category || null,
         content: form.content || null, type: form.type || "actualite",
+        event_type: form.event_type || "autre",
       },
       extraImages: form.extraImages,
       articleId: editing?.id,
