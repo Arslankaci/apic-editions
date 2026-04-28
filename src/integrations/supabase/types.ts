@@ -160,6 +160,7 @@ export type Database = {
           genre: string | null
           id: string
           name: string
+          position: number
           sub_genre_id: string | null
         }
         Insert: {
@@ -169,6 +170,7 @@ export type Database = {
           genre?: string | null
           id?: string
           name: string
+          position?: number
           sub_genre_id?: string | null
         }
         Update: {
@@ -178,6 +180,7 @@ export type Database = {
           genre?: string | null
           id?: string
           name?: string
+          position?: number
           sub_genre_id?: string | null
         }
         Relationships: [
@@ -229,20 +232,58 @@ export type Database = {
         }
         Relationships: []
       }
-      genres: {
+      families: {
         Row: {
+          created_at: string
           id: string
           name: string
+          position: number
         }
         Insert: {
+          created_at?: string
           id?: string
           name: string
+          position?: number
         }
         Update: {
+          created_at?: string
           id?: string
           name?: string
+          position?: number
         }
         Relationships: []
+      }
+      genres: {
+        Row: {
+          family_id: string | null
+          id: string
+          is_hidden: boolean
+          name: string
+          position: number
+        }
+        Insert: {
+          family_id?: string | null
+          id?: string
+          is_hidden?: boolean
+          name: string
+          position?: number
+        }
+        Update: {
+          family_id?: string | null
+          id?: string
+          is_hidden?: boolean
+          name?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "genres_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       news_articles: {
         Row: {
@@ -250,6 +291,7 @@ export type Database = {
           content: string | null
           created_at: string
           date: string | null
+          event_type: string
           excerpt: string | null
           id: string
           image: string | null
@@ -261,6 +303,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           date?: string | null
+          event_type?: string
           excerpt?: string | null
           id?: string
           image?: string | null
@@ -272,6 +315,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           date?: string | null
+          event_type?: string
           excerpt?: string | null
           id?: string
           image?: string | null
@@ -313,17 +357,23 @@ export type Database = {
         Row: {
           genre_id: string
           id: string
+          is_hidden: boolean
           name: string
+          position: number
         }
         Insert: {
           genre_id: string
           id?: string
+          is_hidden?: boolean
           name: string
+          position?: number
         }
         Update: {
           genre_id?: string
           id?: string
+          is_hidden?: boolean
           name?: string
+          position?: number
         }
         Relationships: [
           {
