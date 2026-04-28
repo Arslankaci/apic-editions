@@ -24,7 +24,7 @@ const navItems = [
   { to: "/apic-admin/livres", label: "Catalogue", icon: BookOpen },
   { to: "/apic-admin/collections", label: "Collections", icon: FolderOpen },
   { to: "/apic-admin/auteurs", label: "Auteurs", icon: Users },
-  { to: "/apic-admin/distributeurs", label: "Partenaires", icon: Truck },
+  { to: "/apic-admin/distributeurs", label: "Espace Pro", icon: Truck },
   { to: "/apic-admin/equipe", label: "Nous contacter", icon: UserCog },
 ];
 

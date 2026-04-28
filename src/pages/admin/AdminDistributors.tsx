@@ -75,7 +75,7 @@ export default function AdminDistributors() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-heading font-bold text-foreground">Partenaires</h1>
+        <h1 className="text-3xl font-heading font-bold text-foreground">Espace Pro</h1>
         <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" />Ajouter</Button>
       </div>
       {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mx-auto" /> : (
