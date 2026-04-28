@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Layout from "@/components/layout/Layout";
@@ -17,10 +17,10 @@ const ActualiteDetail = React.lazy(() => import("./pages/ActualiteDetail"));
 const Livres = React.lazy(() => import("./pages/Livres"));
 const BookDetail = React.lazy(() => import("./pages/BookDetail"));
 const Collections = React.lazy(() => import("./pages/Collections"));
-const OuNousTrouver = React.lazy(() => import("./pages/OuNousTrouver"));
 const QuiSommesNous = React.lazy(() => import("./pages/QuiSommesNous"));
 const Contact = React.lazy(() => import("./pages/Contact"));
-const Distributeurs = React.lazy(() => import("./pages/Distributeurs"));
+const Partenaires = React.lazy(() => import("./pages/Partenaires"));
+const MentionsLegales = React.lazy(() => import("./pages/MentionsLegales"));
 const Auteurs = React.lazy(() => import("./pages/Auteurs"));
 const AuteurDetail = React.lazy(() => import("./pages/AuteurDetail"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -84,10 +84,13 @@ const App = () => (
               <Route path="/collections" element={<Layout><Collections /></Layout>} />
               <Route path="/auteurs" element={<Layout><Auteurs /></Layout>} />
               <Route path="/auteurs/:id" element={<Layout><AuteurDetail /></Layout>} />
-              <Route path="/ou-nous-trouver" element={<Layout><OuNousTrouver /></Layout>} />
               <Route path="/qui-sommes-nous" element={<Layout><QuiSommesNous /></Layout>} />
               <Route path="/contact" element={<Layout><Contact /></Layout>} />
-              <Route path="/distributeurs" element={<Layout><Distributeurs /></Layout>} />
+              <Route path="/partenaires" element={<Layout><Partenaires /></Layout>} />
+              <Route path="/mentions-legales" element={<Layout><MentionsLegales /></Layout>} />
+              {/* Legacy redirects */}
+              <Route path="/ou-nous-trouver" element={<Navigate to="/partenaires#points-de-vente" replace />} />
+              <Route path="/distributeurs" element={<Navigate to="/partenaires#distributeurs" replace />} />
 
               {/* Admin */}
               <Route path="/apic-admin">
