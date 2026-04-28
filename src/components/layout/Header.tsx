@@ -91,21 +91,6 @@ const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      {/* Top bar */}
-      <div className="bg-secondary text-secondary-foreground">
-        <div className="container flex justify-between items-center py-1.5 text-sm">
-          <span className="font-heading font-semibold tracking-wide">APIC Éditions</span>
-          <button
-            onClick={toggleLocale}
-            className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
-            aria-label="Toggle language"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span className="font-medium">{locale === "fr" ? "EN" : "FR"}</span>
-          </button>
-        </div>
-      </div>
-
       {/* Main nav */}
       <div className="container">
         <nav className="flex items-center justify-between h-14">
