@@ -93,7 +93,7 @@ export const translations = {
       manuscriptsText1: "Ami·es auteur·ices, pour toute proposition éditoriale, veuillez nous faire parvenir une note d'intention (3 pages) à l'adresse :",
       manuscriptsText2: "Avant de nous soumettre un projet, nous vous invitons à parcourir notre catalogue afin de vérifier que votre manuscrit s'inscrit bien dans notre ligne éditoriale. Inutile de nous soumettre des récits de fiction car nous n'en publions pas !",
       manuscriptsText3: "Compte tenu des divers chantiers en cours, un délai de trois à quatre mois est à prévoir pour toute réponse. Si vous n'avez pas reçu de réponse passé ce délai, vous pouvez considérer que votre proposition n'a pas été retenue. Faute de temps, nous ne pouvons étudier les autres propositions ni retourner les manuscrits envoyés par voie postale.",
-      contactEmail: "editionsapic@gmail.com",
+      contactEmail: "apic.editions@gmail.com",
     },
     distributors: {
       title: "Nos Partenaires",
@@ -209,7 +209,7 @@ export const translations = {
       manuscriptsText1: "Dear authors, for any editorial proposal, please send us a 3-page intent note to:",
       manuscriptsText2: "Before submitting a project, we invite you to browse our catalog to make sure your manuscript fits our editorial line. No need to send fiction — we don't publish any!",
       manuscriptsText3: "Due to ongoing projects, please allow three to four months for a response. If you haven't heard back after that period, consider that your proposal was not retained. Due to time constraints, we cannot review further proposals or return manuscripts sent by post.",
-      contactEmail: "editionsapic@gmail.com",
+      contactEmail: "apic.editions@gmail.com",
     },
     distributors: {
       title: "Our Partners",
