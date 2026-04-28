@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import BookCard from "@/components/shared/BookCard";
@@ -12,7 +12,6 @@ import NewsCard from "@/components/shared/NewsCard";
 
 const Index: React.FC = () => {
   const { t } = useLanguage();
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: newBooks = [] } = useQuery({
     queryKey: ["home-new-books"],
