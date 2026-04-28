@@ -39,11 +39,7 @@ const Index: React.FC = () => {
     },
   });
 
-  const scroll = (dir: "left" | "right") => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
-    }
-  };
+
 
   return (
     <>
