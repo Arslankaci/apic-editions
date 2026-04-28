@@ -215,6 +215,16 @@ const Header: React.FC = () => {
             ))}
           </ul>
 
+          {/* Language switch (desktop) */}
+          <button
+            onClick={toggleLocale}
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+            aria-label="Toggle language"
+          >
+            <Globe className="w-4 h-4" />
+            <span>{locale === "fr" ? "EN" : "FR"}</span>
+          </button>
+
           {/* Mobile toggle */}
           <button
             className="lg:hidden p-2"
