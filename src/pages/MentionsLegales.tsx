@@ -12,7 +12,7 @@ const MentionsLegales: React.FC = () => {
             <strong>APIC Éditions</strong><br />
             9, Rue Ricour Omar, Ben Aknoun<br />
             Téléphone : +213 549 42 37 95<br />
-            Email : editionsapic@gmail.com
+            Email : apic.editions@gmail.com
           </p>
         </section>
 
