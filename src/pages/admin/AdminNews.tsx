@@ -167,6 +167,13 @@ export default function AdminNews() {
                 <SelectContent>{categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </div>
+            <div>
+              <Label>Type d'événement <span className="text-xs text-muted-foreground font-normal">(pour le menu Actualités)</span></Label>
+              <Select value={form.event_type} onValueChange={(v) => setForm({ ...form, event_type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{eventTypes.map((e) => <SelectItem key={e.value} value={e.value}>{e.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
             <div><Label>Image principale</Label><ImageUpload bucket="news-images" value={form.image} onChange={(url) => setForm({ ...form, image: url })} /></div>
 
             {/* Extra images */}
