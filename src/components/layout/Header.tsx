@@ -8,34 +8,86 @@ import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import apicLogo from "@/assets/apic-logo.svg";
 
+type Family = { id: string; name: string; position: number };
+type Genre = { id: string; name: string; family_id: string | null; position: number; is_hidden: boolean };
+type Collection = { id: string; name: string; genre: string | null; position: number };
+
 const Header: React.FC = () => {
   const { t, locale, toggleLocale } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<"catalogue" | "news" | null>(null);
+  const [hoveredFamily, setHoveredFamily] = useState<string | null>(null);
   const [hoveredGenre, setHoveredGenre] = useState<string | null>(null);
-  const [booksMenuOpen, setBooksMenuOpen] = useState(false);
   const location = useLocation();
 
-  const { data: genres = [] } = useQuery({
-    queryKey: ["nav-genres"],
+  const { data: families = [] } = useQuery<Family[]>({
+    queryKey: ["nav-families"],
     queryFn: async () => {
-      const { data } = await supabase.from("genres").select("*, sub_genres(*)").order("name");
-      return data || [];
+      const { data } = await supabase.from("families").select("*").order("position");
+      return (data as Family[]) || [];
     },
   });
 
+  const { data: genres = [] } = useQuery<Genre[]>({
+    queryKey: ["nav-genres-fam"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("genres")
+        .select("id, name, family_id, position, is_hidden")
+        .order("position");
+      return ((data as Genre[]) || []).filter((g) => !g.is_hidden);
+    },
+  });
+
+  const { data: collections = [] } = useQuery<Collection[]>({
+    queryKey: ["nav-collections"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("collections")
+        .select("id, name, genre, position")
+        .order("position");
+      return (data as Collection[]) || [];
+    },
+  });
+
+  // Default selected family/genre when opening the mega-menu
+  React.useEffect(() => {
+    if (openMenu === "catalogue" && !hoveredFamily && families.length > 0) {
+      setHoveredFamily(families[0].id);
+    }
+  }, [openMenu, families, hoveredFamily]);
+
+  React.useEffect(() => {
+    if (hoveredFamily) {
+      const firstGenre = genres.find((g) => g.family_id === hoveredFamily);
+      setHoveredGenre(firstGenre?.id ?? null);
+    }
+  }, [hoveredFamily, genres]);
+
+  const eventTypes = [
+    { value: "salon", label: t.nav.eventSalon },
+    { value: "rencontre", label: t.nav.eventRencontre },
+    { value: "conference", label: t.nav.eventConference },
+    { value: "dedicace", label: t.nav.eventDedicace },
+  ];
+
   const navItems = [
     { to: "/", label: t.nav.home },
-    { to: "/actualites", label: t.nav.news },
-    { to: "/livres", label: t.nav.books, hasMegaMenu: true },
-    { to: "/collections", label: t.nav.collections },
+    { to: "/livres", label: t.nav.books, mega: "catalogue" as const },
     { to: "/auteurs", label: t.nav.authors },
-    { to: "/ou-nous-trouver", label: t.nav.findUs },
+    { to: "/actualites", label: t.nav.news, mega: "news" as const },
     { to: "/qui-sommes-nous", label: t.nav.about },
     { to: "/contact", label: t.nav.contact },
-    { to: "/distributeurs", label: t.nav.distributors },
+    { to: "/partenaires", label: t.nav.distributors },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const currentFamilyGenres = genres.filter((g) => g.family_id === hoveredFamily);
+  const currentGenre = genres.find((g) => g.id === hoveredGenre);
+  const currentCollections = currentGenre
+    ? collections.filter((c) => c.genre === currentGenre.name)
+    : [];
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -67,10 +119,13 @@ const Header: React.FC = () => {
               <li
                 key={item.to}
                 className="relative"
-                onMouseEnter={() => item.hasMegaMenu && setBooksMenuOpen(true)}
+                onMouseEnter={() => item.mega && setOpenMenu(item.mega)}
                 onMouseLeave={() => {
-                  item.hasMegaMenu && setBooksMenuOpen(false);
-                  setHoveredGenre(null);
+                  if (item.mega) {
+                    setOpenMenu(null);
+                    setHoveredFamily(null);
+                    setHoveredGenre(null);
+                  }
                 }}
               >
                 <PrefetchLink
@@ -82,45 +137,93 @@ const Header: React.FC = () => {
                   }`}
                 >
                   {item.label}
-                  {item.hasMegaMenu && <ChevronDown className="w-3 h-3" />}
+                  {item.mega && <ChevronDown className="w-3 h-3" />}
                 </PrefetchLink>
 
-                {/* Mega menu for books */}
-                {item.hasMegaMenu && booksMenuOpen && (
-                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-lg p-4 min-w-[500px]">
-                    <div className="grid grid-cols-2 gap-2">
-                      {genres.map((genre) => (
-                        <div
-                          key={genre.id}
-                          className="relative"
-                          onMouseEnter={() => setHoveredGenre(genre.id)}
-                        >
-                          <Link
-                            to={`/livres?genre=${encodeURIComponent(genre.name)}`}
-                            className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-primary/5 hover:text-primary transition-colors"
+                {/* Mega-menu Catalogue (3 columns: Famille → Genre → Collection) */}
+                {item.mega === "catalogue" && openMenu === "catalogue" && (
+                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-xl p-0 min-w-[680px] overflow-hidden">
+                    <div className="grid grid-cols-3">
+                      {/* Col 1: Familles */}
+                      <div className="bg-muted/40 border-r border-border py-2">
+                        {families.map((fam) => (
+                          <button
+                            key={fam.id}
+                            type="button"
+                            onMouseEnter={() => setHoveredFamily(fam.id)}
+                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${
+                              hoveredFamily === fam.id
+                                ? "bg-primary/10 text-primary"
+                                : "text-foreground/80 hover:bg-primary/5 hover:text-primary"
+                            }`}
                           >
-                            {genre.name}
+                            {fam.name}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Col 2: Genres */}
+                      <div className="border-r border-border py-2">
+                        {currentFamilyGenres.map((g) => (
+                          <Link
+                            key={g.id}
+                            to={`/livres?genre=${encodeURIComponent(g.name)}`}
+                            onMouseEnter={() => setHoveredGenre(g.id)}
+                            onClick={() => setOpenMenu(null)}
+                            className={`block px-4 py-2 text-sm transition-colors ${
+                              hoveredGenre === g.id
+                                ? "bg-primary/5 text-primary font-medium"
+                                : "text-foreground/80 hover:bg-primary/5 hover:text-primary"
+                            }`}
+                          >
+                            {g.name}
                           </Link>
-                          {hoveredGenre === genre.id && genre.sub_genres?.length > 0 && (
-                            <motion.div
-                              initial={{ opacity: 0, x: -5 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              className="absolute left-full top-0 z-10 bg-background border border-border rounded-lg shadow-lg p-2 min-w-[180px] ml-1"
-                            >
-                              {genre.sub_genres.map((sub: { id: string; name: string }) => (
-                                <Link
-                                  key={sub.id}
-                                  to={`/livres?genre=${encodeURIComponent(genre.name)}&sub=${encodeURIComponent(sub.name)}`}
-                                  className="block px-3 py-1.5 text-sm rounded hover:bg-primary/5 hover:text-primary transition-colors"
-                                >
-                                  {sub.name}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                        {currentFamilyGenres.length === 0 && (
+                          <p className="px-4 py-2 text-sm text-muted-foreground italic">—</p>
+                        )}
+                      </div>
+
+                      {/* Col 3: Collections */}
+                      <div className="py-2">
+                        {currentCollections.map((c) => (
+                          <Link
+                            key={c.id}
+                            to={`/livres?genre=${encodeURIComponent(currentGenre!.name)}&collection=${encodeURIComponent(c.name)}`}
+                            onClick={() => setOpenMenu(null)}
+                            className="block px-4 py-2 text-sm text-foreground/80 hover:bg-primary/5 hover:text-primary transition-colors"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                        {currentCollections.length === 0 && currentGenre && (
+                          <p className="px-4 py-2 text-sm text-muted-foreground italic">—</p>
+                        )}
+                      </div>
                     </div>
+                    <Link
+                      to="/livres"
+                      onClick={() => setOpenMenu(null)}
+                      className="block px-4 py-2.5 text-xs font-medium text-center bg-secondary text-secondary-foreground hover:opacity-90 transition-opacity"
+                    >
+                      {t.nav.viewAllCatalog} →
+                    </Link>
+                  </div>
+                )}
+
+                {/* Sub-menu Actualités */}
+                {item.mega === "news" && openMenu === "news" && (
+                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-xl p-2 min-w-[240px]">
+                    {eventTypes.map((ev) => (
+                      <Link
+                        key={ev.value}
+                        to={`/actualites?type=${ev.value}`}
+                        onClick={() => setOpenMenu(null)}
+                        className="block px-3 py-2 text-sm rounded text-foreground/80 hover:bg-primary/5 hover:text-primary transition-colors"
+                      >
+                        {ev.label}
+                      </Link>
+                    ))}
                   </div>
                 )}
               </li>
@@ -162,6 +265,21 @@ const Header: React.FC = () => {
                   {item.label}
                 </PrefetchLink>
               ))}
+              <div className="pt-2 mt-2 border-t border-border">
+                <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                  {t.nav.news}
+                </p>
+                {eventTypes.map((ev) => (
+                  <Link
+                    key={ev.value}
+                    to={`/actualites?type=${ev.value}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2 text-sm text-foreground/70 hover:text-primary"
+                  >
+                    {ev.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}

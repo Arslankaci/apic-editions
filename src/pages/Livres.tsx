@@ -18,6 +18,9 @@ const Livres: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState("");
   const [selectedAuthor, setSelectedAuthor] = useState("");
 
+  // Resolve collection name from URL param to its ID
+  const collectionParam = searchParams.get("collection") || "";
+
   useEffect(() => {
     setSelectedGenre(searchParams.get("genre") || "");
     setSelectedSubGenre(searchParams.get("sub") || "");
@@ -52,6 +55,14 @@ const Livres: React.FC = () => {
       return data;
     },
   });
+
+  // When ?collection=Name is in URL, resolve it to its ID once collections load
+  useEffect(() => {
+    if (collectionParam && collections.length > 0) {
+      const match = collections.find((c: any) => c.name === collectionParam);
+      if (match) setSelectedCollection(match.id);
+    }
+  }, [collectionParam, collections]);
 
   const genreOptions = useMemo(() => genres.map((g) => ({ value: g.name, label: g.name })), [genres]);
 

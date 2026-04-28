@@ -14,10 +14,10 @@ export const routeImporters: Record<string, Importer> = {
   "/collections": () => import("@/pages/Collections"),
   "/auteurs": () => import("@/pages/Auteurs"),
   "/auteurs/:id": () => import("@/pages/AuteurDetail"),
-  "/ou-nous-trouver": () => import("@/pages/OuNousTrouver"),
   "/qui-sommes-nous": () => import("@/pages/QuiSommesNous"),
   "/contact": () => import("@/pages/Contact"),
-  "/distributeurs": () => import("@/pages/Distributeurs"),
+  "/partenaires": () => import("@/pages/Partenaires"),
+  "/mentions-legales": () => import("@/pages/MentionsLegales"),
 
   // Admin
   "/apic-admin/dashboard": () => import("@/pages/admin/AdminDashboard"),
