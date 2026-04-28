@@ -73,24 +73,32 @@ const Index: React.FC = () => {
         </div>
       </section>
 
-      {/* Nouveautés */}
+      {/* Nouveautés - défilement automatique */}
       <SectionWrapper bg="bg-cream">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-heading font-bold">{t.home.newBooks}</h2>
-          <div className="flex gap-2">
-            <button onClick={() => scroll("left")} className="p-2 rounded-full border border-border hover:bg-muted transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button onClick={() => scroll("right")} className="p-2 rounded-full border border-border hover:bg-muted transition-colors">
-              <ChevronRight className="w-4 h-4" />
-            </button>
+        </div>
+        {newBooks.length > 0 && (
+          <div
+            className="group relative overflow-hidden"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+            }}
+          >
+            <div className="flex gap-6 w-max animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+              {[...newBooks, ...newBooks].map((book, idx) => (
+                <BookCard
+                  key={`${book.id}-${idx}`}
+                  book={book}
+                  className="flex-shrink-0 w-48"
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        <div ref={scrollRef} className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
-          {newBooks.map((book) => (
-            <BookCard key={book.id} book={book} className="flex-shrink-0 w-48 snap-start" />
-          ))}
-        </div>
+        )}
       </SectionWrapper>
 
       {/* About preview */}
